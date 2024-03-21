@@ -11,18 +11,22 @@ class Category:
     def __init__(self, name, description, products):
         self.name = name
         self.description = description
-        self.products = []
+        self.__products = []
 
         for product in products:
             product_obj = Product(product['name'], product['description'], product['price'], product['quantity'])
-            self.products.append(product_obj)
+            self.__products.append(product_obj)
 
         Category.total_categories += 1
-        Category.total_unique_products += len(self.products)
+        Category.total_unique_products += len(self.__products)
 
+    def add_product(self, name, description, price, quantity):
+        product = Product(name, description, price, quantity)
+        self.__products.append(product)
+        Category.total_unique_products += 1
     def product(self):
-        for i in range(len(self.products)):
-            return f"{self.products[i].name}, {self.products[i].price} руб. Остаток: {self.products[i].quantity} шт."
+        for i in range(len(self.__products)):
+            return f"{self.__products[i].name}, {self.__products[i].price} руб. Остаток: {self.__products[i].quantity} шт."
 
 
 class Product:
