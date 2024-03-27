@@ -9,7 +9,7 @@ class Category:
     total_unique_products = 0
 
     def __init__(self, name, description, products):
-        self.__products = products.copy()  # Создаем копию списка продуктов
+        self.__products = products
         self.name = name
         self.description = description
 
@@ -32,7 +32,7 @@ class Product:
     def __init__(self, name, description, price, quantity):
         self.name = name
         self.description = description
-        self.price = price
+        self.__price = price
         self.quantity = quantity
 
         Product.total_products += 1
@@ -44,17 +44,29 @@ class Product:
 
     @property
     def price(self):
-        return self.price
+        return self.__price
 
-    price.setter
+    @price.setter
     def price(self, price):
-        if price < 0 or type(price) not in (int, float):
+        if int(price) < 0 or type(price) not in (int, float):
             print("Введена некорректная цена")
         else:
-            self.price = price
+            self.__price = price
 
 
 categories = []
 for entry in data:
     category = Category(entry['name'], entry['description'], entry['products'])
     categories.append(category)
+
+# Создаем экземпляр класса Product
+product1 = Product("Телефон", "Смартфон нового поколения", 1000, 10)
+
+# Пытаемся установить некорректное значение цены
+product1.price = -500  # Это должно вывести сообщение об ошибке
+
+# Пытаемся установить цену как строку
+#product1.price = "дешевле"  # Это также должно вывести сообщение об ошибке
+
+# Печатаем значение цены после попыток установки некорректных значений
+print("Цена продукта:", product1.price)
