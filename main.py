@@ -47,6 +47,22 @@ class Product:
     def __add__(self, other):
         return self.price * self.quantity + other.price * other.quantity
 
+    @classmethod
+    def get_product(cls, name, description, price, quantity):
+        product = cls(name, description, price, quantity)
+        return product
+
+    @property
+    def price(self):
+        return self.__price
+
+    @price.setter
+    def price(self, price):
+        if int(price) < 0 or type(price) not in (int, float):
+            print("Введена некорректная цена")
+        else:
+            self.__price = price
+
     def __str__(self):
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
