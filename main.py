@@ -12,18 +12,19 @@ class Category:
         self.__products = products
         self.name = name
         self.description = description
-
         Category.total_categories += 1
         Category.total_unique_products += len(products)
+
+    def __str__(self):
+        return f'{self.name}, количество продуктов: {len(self.__products)}'
 
     def add_product(self, product):
         self.__products.append(product)
         Category.total_unique_products += 1
 
-    def get_product_info(self):
-        for product in self.__products:
-            info = f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт."
-            print(info)
+    @property
+    def product(self):
+        return '\n'.join(map(str,self.__products))
 
 
 class Product:
@@ -37,6 +38,8 @@ class Product:
 
         Product.total_products += 1
 
+    def __add__(self, other):
+        return self.__price * self.quantity + other.__price * other.quantity
     @classmethod
     def get_prooduct(cls, name, description, price, quantity):
         product = cls(name, description, price, quantity)
@@ -53,20 +56,15 @@ class Product:
         else:
             self.__price = price
 
+    def __str__(self):
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
 
 categories = []
 for entry in data:
-    category = Category(entry['name'], entry['description'], entry['products'])
+    category = Product(entry['name'], entry['description'],entry['price'], entry['products'],)
     categories.append(category)
 
-# Создаем экземпляр класса Product
-product1 = Product("Телефон", "Смартфон нового поколения", 1000, 10)
 
-# Пытаемся установить некорректное значение цены
-product1.price = -500  # Это должно вывести сообщение об ошибке
 
-# Пытаемся установить цену как строку
-#product1.price = "дешевле"  # Это также должно вывести сообщение об ошибке
 
-# Печатаем значение цены после попыток установки некорректных значений
-print("Цена продукта:", product1.price)
