@@ -76,4 +76,6 @@ for entry in data:
     category = Category(entry['name'], entry['description'], products)
     categories.append(category)
 
-
+for category in categories:
+    print(category)
+    print(len(category))
