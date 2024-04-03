@@ -25,8 +25,11 @@ class Category:
         return counter
 
     def add_product(self, product):
-        self.products.append(product)
-        Category.total_unique_products += 1
+        if isinstance(product, Product):
+            self.products.append(product)
+            Category.total_unique_products += 1
+        else:
+            raise TypeError
 
     @property
     def product(self):
@@ -45,7 +48,10 @@ class Product:
         Product.total_products += 1
 
     def __add__(self, other):
-        return self.price * self.quantity + other.price * other.quantity
+        if type(self) == type(other):
+            return self.price * self.quantity + other.price * other.quantity
+        else:
+            raise TypeError
 
     @classmethod
     def get_product(cls, name, description, price, quantity):
@@ -67,15 +73,36 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
 
-categories = []
-for entry in data:
-    products = []
-    for prod in entry['products']:
-        product = Product(prod['name'], prod['description'], prod['price'], prod['quantity'])
-        products.append(product)
-    category = Category(entry['name'], entry['description'], products)
-    categories.append(category)
+class Smartphone(Product):
+    def __init__(self, name, description, price, quantity, performance, model, internal_memory, colour):
+        super().__init__(name, description, price, quantity)
+        self.performance = performance
+        self.model = model
+        self.internal_memory = internal_memory
+        self.colour = colour
 
-for category in categories:
-    print(category)
-    print(len(category))
+
+class LawnGrass(Product):
+    def __init__(self, name, description, price, quantity, country, growth_time, colour):
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.growth_time = growth_time
+        self.colour = colour
+
+
+# categories = []
+# for entry in data:
+#     products = []
+#     for prod in entry['products']:
+#         product = Product(prod['name'], prod['description'], prod['price'], prod['quantity'])
+#         products.append(product)
+#     category = Category(entry['name'], entry['description'], products)
+#     categories.append(category)
+#
+# for category in categories:
+#     print(category)
+#     print(len(category))
+c = LawnGrass('trava', 'default', 300, 2, 'USA', 2, 'zelen')
+z = Smartphone('marihuana', 'default', 5000, 2, '10000', 'Samsung', 300, 'black')
+m = LawnGrass('marihuana', 'drug', 2500, 12, 'Afganistan', 10, 'beautiful')
+print(c + m)
