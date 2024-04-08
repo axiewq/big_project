@@ -1,7 +1,53 @@
 import json
+from abc import ABC, abstractmethod
 
 with open('data.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
+
+
+class AllProducts(ABC):
+    total_products = 0
+
+    def __init__(self, name, description, price, quantity):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.quantity = quantity
+
+        Product.total_products += 1
+
+    def __add__(self, other):
+        if type(self) == type(other):
+            return self.price * self.quantity + other.price * other.quantity
+        else:
+            raise TypeError
+
+    @classmethod
+    def get_product(cls, name, description, price, quantity):
+        product = cls(name, description, price, quantity)
+        return product
+
+    @property
+    def price(self):
+        return self.__price
+
+    @price.setter
+    def price(self, price):
+        if int(price) < 0 or type(price) not in (int, float):
+            print("Введена некорректная цена")
+        else:
+            self.__price = price
+
+    def __str__(self):
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+
+
+class MixinLog:
+    def __init__(self, name, description, price, quantity):
+        super().__init__(name, description, price, quantity)
+        print(f'Был создан такой продукт:\n{self.name}, {self.description}, {self.price}, {self.quantity}')
+
+
 
 
 class Category:
@@ -36,16 +82,7 @@ class Category:
         return '\n'.join(map(str, self.products))
 
 
-class Product:
-    total_products = 0
-
-    def __init__(self, name, description, price, quantity):
-        self.name = name
-        self.description = description
-        self.price = price
-        self.quantity = quantity
-
-        Product.total_products += 1
+class Product(MixinLog, AllProducts):
 
     def __add__(self, other):
         if type(self) == type(other):
