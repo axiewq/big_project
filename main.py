@@ -30,7 +30,6 @@ class AllProducts(ABC):
         pass
 
 
-
 class MixinLog:
     def __init__(self, name, description, price, quantity):
         super().__init__(name, description, price, quantity)
@@ -47,6 +46,15 @@ class Category:
         self.description = description
         Category.total_categories += 1
         Category.total_unique_products += len(products)
+
+    def calculate_average_price(self):
+        try:
+            if len(self.products) == 0:
+                raise ZeroDivisionError
+            total_price = sum(product.price for product in self.products)
+            return total_price / len(self.products)
+        except ZeroDivisionError:
+            return 0
 
     def __str__(self):
         return f'{self.name}, количество продуктов: {len(self.products)}'
@@ -73,8 +81,14 @@ class Product(MixinLog, AllProducts):
     total_products = 0
 
     def __init__(self, name, description, price, quantity):
-        super().__init__(name, description, price, quantity)
-        Product.total_products += 1
+        try:
+            if not quantity or quantity <= 0:
+                raise ValueError
+        except ValueError:
+            print(f'в {name} количество должно быть положительным, продукт не создан')
+        else:
+            super().__init__(name, description, price, quantity)
+            Product.total_products += 1
 
     def __add__(self, other):
         if type(self) == type(other):
@@ -131,8 +145,7 @@ class LawnGrass(Product):
 # for category in categories:
 #     print(category)
 #     print(len(category))
-c = LawnGrass('trava', 'default', 300, 2, 'USA', 2, 'zelen')
-z = Smartphone('marihuana', 'default', 5000, 2, '10000', 'Samsung', 300, 'black')
-m = LawnGrass('marihuana', 'drug', 2500, 12, 'Afganistan', 10, 'beautiful')
-print(c + m)
-print(Product.total_products)
+c = LawnGrass('trava', 'default', 300, 87213, 'USA', 2, 'zelen')
+z = Smartphone('salad', 'food', 5000, 2, '10000', 'Samsung', 300, 'black')
+m = LawnGrass('marihuana', 'drug', 2500, 123, 'Afganistan', 10, 'beautiful')
+
