@@ -6,7 +6,6 @@ with open('data.json', 'r', encoding='utf-8') as file:
 
 
 class AllProducts(ABC):
-    total_products = 0
 
     def __init__(self, name, description, price, quantity):
         self.name = name
@@ -14,40 +13,28 @@ class AllProducts(ABC):
         self.price = price
         self.quantity = quantity
 
-        Product.total_products += 1
-
+    @abstractmethod
     def __add__(self, other):
-        if type(self) == type(other):
-            return self.price * self.quantity + other.price * other.quantity
-        else:
-            raise TypeError
+        pass
 
-    @classmethod
+    @abstractmethod
     def get_product(cls, name, description, price, quantity):
-        product = cls(name, description, price, quantity)
-        return product
+        pass
 
-    @property
+    @abstractmethod
     def price(self):
-        return self.__price
+        pass
 
-    @price.setter
-    def price(self, price):
-        if int(price) < 0 or type(price) not in (int, float):
-            print("Введена некорректная цена")
-        else:
-            self.__price = price
-
+    @abstractmethod
     def __str__(self):
-        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
+        pass
+
 
 
 class MixinLog:
     def __init__(self, name, description, price, quantity):
         super().__init__(name, description, price, quantity)
         print(f'Был создан такой продукт:\n{self.name}, {self.description}, {self.price}, {self.quantity}')
-
-
 
 
 class Category:
@@ -83,6 +70,11 @@ class Category:
 
 
 class Product(MixinLog, AllProducts):
+    total_products = 0
+
+    def __init__(self, name, description, price, quantity):
+        super().__init__(name, description, price, quantity)
+        Product.total_products += 1
 
     def __add__(self, other):
         if type(self) == type(other):
@@ -143,3 +135,4 @@ c = LawnGrass('trava', 'default', 300, 2, 'USA', 2, 'zelen')
 z = Smartphone('marihuana', 'default', 5000, 2, '10000', 'Samsung', 300, 'black')
 m = LawnGrass('marihuana', 'drug', 2500, 12, 'Afganistan', 10, 'beautiful')
 print(c + m)
+print(Product.total_products)
